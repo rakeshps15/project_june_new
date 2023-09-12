@@ -17,6 +17,12 @@ class _SqfliteHomeState extends State<SqfliteHome> {
   List<Map<String, dynamic>> contacts = [];
 
   @override
+  void initState() {
+    loadUI();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -28,7 +34,10 @@ class _SqfliteHomeState extends State<SqfliteHome> {
               itemCount: contacts.length,
               itemBuilder: (context, index) {
                 return Card(
-                  child: ListTile(),
+                  child: ListTile(
+                    title: Text(contacts[index]['cname']),
+                    subtitle: Text(contacts[index]['cnumber']),
+                  ),
                 );
               }),
       floatingActionButton: FloatingActionButton(
@@ -95,5 +104,13 @@ class _SqfliteHomeState extends State<SqfliteHome> {
   Future<void> createContact() async {
    var id = await SQLHelper.create_contact(name_cntrl.text,phone_cntrl.text);
    print(id);
+  }
+
+  void loadUI() async{
+    final data = await SQLHelper.readContacts();
+    setState(() {
+      contacts = data;
+      isLoading = false;
+    });
   }
 }
