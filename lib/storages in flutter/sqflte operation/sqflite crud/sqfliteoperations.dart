@@ -5,8 +5,8 @@ class SQLHelper {
   static Future<sql.Database> createDB() async {
     return sql.openDatabase('mycontacts.db', version: 1,
         onCreate: (sql.Database database, int version) async {
-      await createTable(database);
-    });
+          await createTable(database);
+        });
   }
 
   //table for storing values in this db

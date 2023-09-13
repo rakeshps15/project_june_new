@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_june1/storages%20in%20flutter/sqflte%20operation/sqflite%20crud/sqfliteoperations.dart';
 
 void main(){
-   runApp(MaterialApp(home: SqfliteHome(),));
+  runApp(MaterialApp(home: SqfliteHome(),));
 }
 
 class SqfliteHome extends StatefulWidget {
@@ -31,15 +31,15 @@ class _SqfliteHomeState extends State<SqfliteHome> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: contacts.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(contacts[index]['cname']),
-                    subtitle: Text(contacts[index]['cnumber']),
-                  ),
-                );
-              }),
+          itemCount: contacts.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                title: Text(contacts[index]['cname']),
+                subtitle: Text(contacts[index]['cnumber']),
+              ),
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         // creating a new data so the id will be null
         onPressed: () => showSheet(null),
@@ -90,7 +90,7 @@ class _SqfliteHomeState extends State<SqfliteHome> {
                         await createContact();
                       }
                       if(id != null){
-                       // await updateContact(id);
+                        // await updateContact(id);
                       }
                       name_cntrl.text="";
                       phone_cntrl.text="";
@@ -105,8 +105,8 @@ class _SqfliteHomeState extends State<SqfliteHome> {
   }
 //to add a new data or contact to sqflite db
   Future<void> createContact() async {
-   var id = await SQLHelper.create_contact(name_cntrl.text,phone_cntrl.text);
-   print(id);
+    var id = await SQLHelper.create_contact(name_cntrl.text,phone_cntrl.text);
+    print(id);
   }
 
   void loadUI() async{
