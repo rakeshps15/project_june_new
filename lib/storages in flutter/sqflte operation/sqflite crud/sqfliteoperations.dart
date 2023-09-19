@@ -32,4 +32,5 @@ class SQLHelper {
     final db = await SQLHelper.createDB();
     return db.query('contacts',orderBy: 'id');
   }
+
 }

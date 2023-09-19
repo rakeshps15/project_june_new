@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_june1/storages%20in%20flutter/sqflite%20example/LoginUi.dart';
-import 'package:project_june1/storages%20in%20flutter/sqflite%20example/Registrationui.dart';
+import 'package:project_june1/storages%20in%20flutter/sqflite%20example/SignupUI.dart';
 
 
 void main(){
