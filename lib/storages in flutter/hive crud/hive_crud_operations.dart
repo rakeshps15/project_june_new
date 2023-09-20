@@ -44,7 +44,9 @@ class _Hive_crudState extends State<Hive_crud> {
               subtitle: Text(task[index]['taskcont']),
               trailing: Wrap(
                 children: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+                  IconButton(onPressed: () {
+                    showTask(context, task['id']);
+                  }, icon: Icon(Icons.edit)),
                   IconButton(onPressed: () {}, icon: Icon(Icons.delete))
                 ],
               ),
@@ -62,84 +64,94 @@ class _Hive_crudState extends State<Hive_crud> {
   final task_controller =TextEditingController();
   final content_controller=TextEditingController();
 
-  showTask(BuildContext context, int? itemkey) {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.only(
-              top: 15,
-              left: 15,
-              right: 15,
-              bottom: MediaQuery
-                  .of(context)
-                  .viewInsets
-                  .bottom + 120
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-               TextField(
-                controller: task_controller,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Task Name"
+  void showTask(BuildContext context, int? itemkey) {
+    if (itemkey != null) {
+      final existingTask = task.firstWhere((element) =>
+      element['id'] == itemkey);
+      task_controller.text = existingTask['taskname'];
+      content_controller.text = existingTask['taskcont'];
+    }
+
+    showTask(BuildContext context, int? itemkey) {
+      showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            padding: EdgeInsets.only(
+                top: 15,
+                left: 15,
+                right: 15,
+                bottom: MediaQuery
+                    .of(context)
+                    .viewInsets
+                    .bottom + 120
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: task_controller,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Task Name"
+                  ),
                 ),
-              ),
-              SizedBox(height: 15,),
-               TextField(
-                controller: content_controller,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Task Content'
+                SizedBox(height: 15,),
+                TextField(
+                  controller: content_controller,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Task Content'
+                  ),
                 ),
-              ),
-              ElevatedButton(onPressed: () {
-                if (task_controller.text != "" &&
-                    content_controller.text != "") {
-                  if (itemkey == null) {
-                    createTask({
-                      'name': task_controller.text.trim(),
-                      'content': content_controller.text.trim()
-                    });
-                  } else {
-                    updateTask(itemkey,{
-                      'name': task_controller.text.trim(),
-                      'content': content_controller.text.trim()
-                    });
+                ElevatedButton(onPressed: () {
+                  if (task_controller.text != "" &&
+                      content_controller.text != "") {
+                    if (itemkey == null) {
+                      createTask({
+                        'name': task_controller.text.trim(),
+                        'content': content_controller.text.trim()
+                      });
+                    } else {
+                      updateTask(itemkey, {
+                        'name': task_controller.text.trim(),
+                        'content': content_controller.text.trim()
+                      });
+                    }
                   }
-                }
                   content_controller.text = "";
                   task_controller.text = "";
                 },
-                  child: Text(itemkey==null ? 'Create  Task' : "Update Task"))
-            ],
-          ),
-        );
-      },
-    );
+                    child: Text(
+                        itemkey == null ? 'Create  Task' : "Update Task"))
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 
-  Future<void> createTask(Map<String, dynamic> task) async{
-    await mybox.add(task);
-    Load_or_Read_Task();
+    Future<void> createTask(Map<String, dynamic> task) async {
+      await mybox.add(task);
+      Load_or_Read_Task();
+    }
+
+    void updateTask(int? itemkey, Map<String, String> map) async{}
+
+    void Load_or_Read_Task() {
+      final task_from_hive = mybox.keys.map((key) {
+        final value = mybox.get(key);
+        return {
+          'id': key,
+          'taskname': value['name'],
+          'taskcont': value['content']
+        };
+      }).toList();
+
+      setState(() {
+        task = task_from_hive.reversed.toList();
+      });
+    }
   }
-
-  void updateTask( int? itemkey, Map<String, String> map) {}
-
-  void Load_or_Read_Task() {
-    final task_from_hive = mybox.keys.map((key){
-      final value = mybox.get(key);
-      return{
-        'id' : key,
-        'taskname' : value['name'],
-        'taskcont' : value['content']
-      };
-    }).toList();
-
-    setState(() {
-      task=task_from_hive.reversed.toList();
-    });
-  }
-}
